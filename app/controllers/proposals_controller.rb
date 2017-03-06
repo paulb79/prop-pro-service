@@ -3,7 +3,14 @@ class ProposalsController < ApplicationController
 
   # GET /proposals
   def index
-    @proposals = Proposal.all
+
+    logger.info "P Index: #{params[:name]}"
+
+    if params[:name].nil?
+      @proposals = Proposal.all.order("customer");
+    else
+      @proposals = Proposal.where("lower(customer) LIKE ?", "%#{params[:name].downcase}%")
+    end
 
     render json: @proposals
   end
